@@ -22,6 +22,7 @@ class HTTPRequest(Event, ABC):
         self.collection = index.collection
         self.index = index
         self.completion_time = None
+        self.start_time = None
         self.workers = []
 
     @abstractmethod
@@ -32,7 +33,7 @@ class HTTPRequest(Event, ABC):
         try:
             self.index.log_request(self)
             result = await self.process()
-            self.index.log_result(self, result, (self.completion_time or self.collection.time) - self.time)
+            self.index.log_result(self, result, (self.completion_time or self.collection.time) - (self.start_time or self.time))
         except DSEError as e:
             result = '5xx'
             print(f'{self.time},{e.__class__.__name__},{self.__class__.__name__},"{e}"', file=sys.stderr)
