@@ -67,6 +67,7 @@ class SearchRequest(HTTPRequest):
 
     async def process(self):
         await self.collection.yield_until(self.time)
+        self.start_time = self.collection.time
 
         # identify the relevant shards
         if self.given_hashes is None:
@@ -99,6 +100,7 @@ class SearchRequest(HTTPRequest):
             label=repr(self)
         )
 
+        self.completion_time = self.collection.time
         return response
 
     async def worker_process(self, shard: Shard, worker: Worker) -> str:

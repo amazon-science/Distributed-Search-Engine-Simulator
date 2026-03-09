@@ -52,6 +52,7 @@ class PutRequest(HTTPRequest):
 
     async def process(self):
         await self.collection.yield_until(self.time)
+        self.start_time = self.collection.time
 
         shard: Shard = await self.index.compute_shard(self.document_id, self.given_hash)
 
